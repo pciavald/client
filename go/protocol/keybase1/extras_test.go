@@ -152,3 +152,51 @@ func TestRedact(t *testing.T) {
 	arg.Redact()
 	require.Equal(t, strings.Split(cmd2, " "), arg.Argv)
 }
+
+func TestTimeConversions(t *testing.T) {
+	const longForm = "Jan 2, 2006 at 3:04pm (MST)"
+	constTime, err := time.Parse(longForm, "Feb 3, 2013 at 7:54pm (PST)")
+	require.NoError(t, err)
+
+	require.Equal(t, UnixTime(0), ToUnixTime(time.Time{}))
+	require.Equal(t, Time(0), ToTime(time.Time{}))
+
+	require.Equal(t, time.Time{}, FromUnixTime(UnixTime(0)))
+	require.Equal(t, time.Time{}, FromTime(Time(0)))
+
+	times := []time.Time{
+		time.Time{},
+		constTime,
+		// Both time formats should have at least second precision.
+		constTime.Add(time.Duration(12096123 * time.Second)),
+		constTime.Add(time.Duration(-12096321 * time.Second)),
+		constTime.AddDate(1000, 0, 0),  // in a thousand years
+		constTime.AddDate(10000, 0, 0), // in 10 thousand years
+		constTime.AddDate(-3000, 0, 0), // 3 thousand years ago
+	}
+
+	assertEqualTimes := func(t1, t2 time.Time) {
+		require.Equal(t, t1.Unix(), t2.Unix(), "expected %v and %v to be equal (time.Unix)", t1, t2)
+		require.True(t, t1.Equal(t2), "expected %v and %v to be equal (time.Equal)", t1, t2)
+	}
+
+	for i, tm := range times {
+		t.Logf("Testing %d", i)
+
+		kbTime := ToTime(tm)
+		tRev := FromTime(kbTime)
+		assertEqualTimes(tm, tRev)
+
+		kbUnixTime := ToUnixTime(tm)
+		tUnixRev := FromUnixTime(kbUnixTime)
+		assertEqualTimes(tm, tUnixRev)
+	}
+
+	{
+		tm := constTime.Add(time.Duration(12096123*time.Second + 678*time.Millisecond))
+		kbTime := ToTime(tm)
+		tRev := FromTime(kbTime)
+		assertEqualTimes(tm, tRev)
+	}
+
+}

@@ -853,7 +853,8 @@ func FromTime(t Time) time.Time {
 	if t == 0 {
 		return time.Time{}
 	}
-	return time.Unix(0, int64(t)*1000000)
+	sec, ms := int64(t/1e3), int64(t%1e3)
+	return time.Unix(sec, ms*1e6)
 }
 
 func (t Time) Time() time.Time {
@@ -878,7 +879,7 @@ func ToTime(t time.Time) Time {
 	if t.IsZero() {
 		return 0
 	}
-	return Time(t.UnixNano() / 1000000)
+	return Time(t.Unix()*1e3 + int64(t.Nanosecond())/1e6)
 }
 
 func ToTimePtr(t *time.Time) *Time {
@@ -903,7 +904,10 @@ func FormatTime(t Time) string {
 }
 
 func FromUnixTime(u UnixTime) time.Time {
-	return FromTime(Time(u * 1000))
+	if u == 0 {
+		return time.Time{}
+	}
+	return time.Unix(int64(u), 0)
 }
 
 func (u UnixTime) Time() time.Time {
