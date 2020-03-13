@@ -143,6 +143,11 @@ export type AddMembersWizardState = {
   teamID: TeamID
 }
 
+export type ChannelNameID = {
+  channelname: string
+  conversationIDKey: ConversationIDKey
+}
+
 export type State = {
   readonly addMembersWizard: AddMembersWizardState
   readonly addUserToTeamsState: AddUserToTeamsState
