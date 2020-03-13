@@ -34,6 +34,8 @@ func Params(kbCtx libkbfs.Context, storageRoot string, uid keybase1.UID) (
 	params.EnableJournal = false
 	params.DiskCacheMode = libkbfs.DiskCacheModeOff
 
+	//params.CleanBlockCacheCapacity = 1024 * 1024
+
 	// Make a per-user index for all the TLFs indexed locally by that
 	// user.  This means on one hand that the user can get
 	// high-quality, ranked search results across all TLFs, all

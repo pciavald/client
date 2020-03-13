@@ -42,7 +42,7 @@ const (
 	fsIndexStorageDir = "kbfs_index"
 	docDbDir          = "docdb"
 	nameDocIDPrefix   = "name_"
-	maxIndexBatchSize = 100 * 1024 * 1024 // 100 MB
+	maxIndexBatchSize = 10 * 1024 * 1024 // 100 MB
 )
 
 const (

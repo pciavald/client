@@ -49,7 +49,7 @@ func (c *configuration) SetAnalysisQueueSize(n int) {
 func newConfiguration() *configuration {
 	return &configuration{
 		Cache:         registry.NewCache(),
-		analysisQueue: index.NewAnalysisQueue(4),
+		analysisQueue: index.NewAnalysisQueue(1),
 	}
 }
 
