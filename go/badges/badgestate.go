@@ -6,6 +6,7 @@ package badges
 import (
 	"bytes"
 	"encoding/json"
+	"strings"
 	"sync"
 
 	"github.com/keybase/client/go/gregor"
@@ -197,7 +198,7 @@ func (b *BadgeState) UpdateWithGregor(ctx context.Context, gstate gregor.State) 
 	b.state.RevokedDevices = []keybase1.DeviceID{}
 	b.state.NewTeams = nil
 	b.state.DeletedTeams = nil
-	b.state.NewTeamAccessRequests = nil
+	b.state.NewTeamAccessRequests = 0
 	b.state.HomeTodoItems = 0
 	b.state.TeamsWithResetUsers = nil
 	b.state.ResetState = keybase1.ResetState{}
@@ -218,6 +219,10 @@ func (b *BadgeState) UpdateWithGregor(ctx context.Context, gstate gregor.State) 
 			continue
 		}
 		category := categoryObj.String()
+		if strings.HasPrefix(category, "team.request_access") {
+			b.state.NewTeamAccessRequests++
+			continue
+		}
 		switch category {
 		case "home.state":
 			var tmp homeStateBody
@@ -334,18 +339,6 @@ func (b *BadgeState) UpdateWithGregor(ctx context.Context, gstate gregor.State) 
 					DeletedBy: x.OpBy.Username,
 					Id:        msgID,
 				})
-			}
-		case "team.request_access":
-			var body []newTeamBody
-			if err := json.Unmarshal(item.Body().Bytes(), &body); err != nil {
-				b.log.CDebugf(ctx, "BadgeState unmarshal error for team.request_access item: %v", err)
-				continue
-			}
-			for _, x := range body {
-				if x.TeamName == "" {
-					continue
-				}
-				b.state.NewTeamAccessRequests = append(b.state.NewTeamAccessRequests, x.TeamID)
 			}
 		case "team.member_out_from_reset":
 			var body keybase1.TeamMemberOutFromReset
