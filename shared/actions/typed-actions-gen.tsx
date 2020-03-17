@@ -982,6 +982,7 @@ export type TypedActionsMap = {
   'teams:setMemberSubteamDetails': teams.SetMemberSubteamDetailsPayload
   'teams:setTeamWizardTeamType': teams.SetTeamWizardTeamTypePayload
   'teams:setTeamWizardNameDescription': teams.SetTeamWizardNameDescriptionPayload
+  'teams:teamSeen': teams.TeamSeenPayload
   'tracker2:load': tracker2.LoadPayload
   'tracker2:updatedDetails': tracker2.UpdatedDetailsPayload
   'tracker2:updateResult': tracker2.UpdateResultPayload

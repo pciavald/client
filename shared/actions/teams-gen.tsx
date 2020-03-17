@@ -91,6 +91,7 @@ export const showTeamByName = 'teams:showTeamByName'
 export const startAddMembersWizard = 'teams:startAddMembersWizard'
 export const teamCreated = 'teams:teamCreated'
 export const teamLoaded = 'teams:teamLoaded'
+export const teamSeen = 'teams:teamSeen'
 export const teamSetMemberSelected = 'teams:teamSetMemberSelected'
 export const toggleInvitesCollapsed = 'teams:toggleInvitesCollapsed'
 export const unsubscribeTeamDetails = 'teams:unsubscribeTeamDetails'
@@ -315,6 +316,7 @@ type _TeamCreatedPayload = {
   readonly teamname: string
 }
 type _TeamLoadedPayload = {readonly teamID: Types.TeamID; readonly details: Types.TeamDetails}
+type _TeamSeenPayload = {readonly teamID: Types.TeamID}
 type _TeamSetMemberSelectedPayload = {
   readonly teamID: Types.TeamID
   readonly username: string
@@ -479,6 +481,10 @@ export const createUnsubscribeTeamDetails = (
 export const createToggleInvitesCollapsed = (
   payload: _ToggleInvitesCollapsedPayload
 ): ToggleInvitesCollapsedPayload => ({payload, type: toggleInvitesCollapsed})
+/**
+ * User has viewed this team. Clear related badges.
+ */
+export const createTeamSeen = (payload: _TeamSeenPayload): TeamSeenPayload => ({payload, type: teamSeen})
 /**
  * We successfully left a team
  */
@@ -994,6 +1000,7 @@ export type StartAddMembersWizardPayload = {
 }
 export type TeamCreatedPayload = {readonly payload: _TeamCreatedPayload; readonly type: typeof teamCreated}
 export type TeamLoadedPayload = {readonly payload: _TeamLoadedPayload; readonly type: typeof teamLoaded}
+export type TeamSeenPayload = {readonly payload: _TeamSeenPayload; readonly type: typeof teamSeen}
 export type TeamSetMemberSelectedPayload = {
   readonly payload: _TeamSetMemberSelectedPayload
   readonly type: typeof teamSetMemberSelected
@@ -1106,6 +1113,7 @@ export type Actions =
   | StartAddMembersWizardPayload
   | TeamCreatedPayload
   | TeamLoadedPayload
+  | TeamSeenPayload
   | TeamSetMemberSelectedPayload
   | ToggleInvitesCollapsedPayload
   | UnsubscribeTeamDetailsPayload
